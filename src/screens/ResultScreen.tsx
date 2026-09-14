@@ -74,7 +74,7 @@ export function ResultScreen({ navigation, route }: Props) {
       <View style={styles.toolbar}>
         <Pressable
           onPress={() => navigation.goBack()}
-          style={styles.toolbarBtn}
+          style={({ pressed }) => [styles.toolbarBtn, pressed && styles.pressed]}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Go back"
@@ -104,7 +104,7 @@ export function ResultScreen({ navigation, route }: Props) {
 
       <View style={styles.actions}>
         <Pressable
-          style={[styles.actionBtn, styles.downloadBtn, downloading && styles.actionBtnDisabled]}
+          style={({ pressed }) => [styles.actionBtn, styles.downloadBtn, pressed && styles.pressed, downloading && styles.actionBtnDisabled]}
           onPress={downloadImage}
           disabled={downloading}
           accessibilityRole="button"
@@ -117,11 +117,11 @@ export function ResultScreen({ navigation, route }: Props) {
           )}
         </Pressable>
 
-        <Pressable style={[styles.actionBtn, styles.outlineBtn]} onPress={shareImage}>
+        <Pressable style={({ pressed }) => [styles.actionBtn, styles.outlineBtn, pressed && styles.pressed]} onPress={shareImage}>
           <Text style={styles.outlineBtnText}>Share</Text>
         </Pressable>
 
-        <Pressable style={[styles.actionBtn, styles.outlineBtn]} onPress={() => navigation.popToTop()}>
+        <Pressable style={({ pressed }) => [styles.actionBtn, styles.outlineBtn, pressed && styles.pressed]} onPress={() => navigation.popToTop()}>
           <Text style={styles.outlineBtnText}>New Image</Text>
         </Pressable>
       </View>
@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
   scrollContent: { alignItems: 'center' },
   actions: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
     paddingHorizontal: 12,
     paddingTop: 12,
@@ -173,6 +174,7 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     flex: 1,
+    minWidth: 92,
     minHeight: 48,
     paddingHorizontal: 8,
     paddingVertical: 12,
@@ -183,6 +185,7 @@ const styles = StyleSheet.create({
   actionBtnDisabled: {
     opacity: 0.7,
   },
+  pressed: { opacity: 0.78, transform: [{ scale: 0.97 }] },
   downloadBtn: {
     backgroundColor: '#198754',
   },

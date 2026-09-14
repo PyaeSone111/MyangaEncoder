@@ -53,7 +53,7 @@ export function EditorScreen({ navigation, route }: Props) {
       <View style={styles.toolbar}>
         <Pressable
           onPress={() => navigation.goBack()}
-          style={styles.toolbarBtn}
+          style={({ pressed }) => [styles.toolbarBtn, pressed && styles.pressed]}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel="Go back"
@@ -65,7 +65,7 @@ export function EditorScreen({ navigation, route }: Props) {
         </Text>
         <Pressable
           onPress={saveCompiledImage}
-          style={[styles.saveBtn, busy && styles.disabled]}
+          style={({ pressed }) => [styles.saveBtn, pressed && styles.pressed, busy && styles.disabled]}
           disabled={busy}
           hitSlop={8}
           accessibilityRole="button"
@@ -93,7 +93,7 @@ export function EditorScreen({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#1a1a2e' },
   toolbar: {
-    minHeight: 52,
+    minHeight: 60,
     backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
@@ -132,4 +132,5 @@ const styles = StyleSheet.create({
   },
   saveBtnText: { color: '#fff', fontWeight: '700' },
   disabled: { opacity: 0.7 },
+  pressed: { opacity: 0.78, transform: [{ scale: 0.97 }] },
 });

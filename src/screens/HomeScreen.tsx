@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, Easing } from 'react-native';
 import {
   ActivityIndicator,
   Alert,
@@ -37,6 +38,15 @@ export function HomeScreen({ navigation }: Props) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState('');
   const insets = useSafeAreaInsets();
+  const contentOpacity = useRef(new Animated.Value(0)).current;
+  const contentTranslate = useRef(new Animated.Value(18)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(contentOpacity, { toValue: 1, duration: 520, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.spring(contentTranslate, { toValue: 0, damping: 16, stiffness: 130, useNativeDriver: true }),
+    ]).start();
+  }, [contentOpacity, contentTranslate]);
 
   const pickImage = async () => {
     const allowed = await requestGalleryPermission();
@@ -99,10 +109,18 @@ export function HomeScreen({ navigation }: Props) {
 
   return (
     <ImageBackground source={BACKGROUND} style={styles.container} resizeMode="cover">
-      <View style={[styles.footer, { paddingBottom: insets.bottom + 32 }]}>
+      <Animated.View
+        style={[styles.footer, { paddingBottom: insets.bottom + 28, opacity: contentOpacity, transform: [{ translateY: contentTranslate }] }]}
+      >
         <Text style={styles.subtitle}>Place your text and encode onto images</Text>
 
-        <Pressable style={styles.card} onPress={pickImage} disabled={loading}>
+        <Pressable
+          style={({ pressed }) => [styles.card, pressed && styles.cardPressed, loading && styles.cardDisabled]}
+          onPress={pickImage}
+          disabled={loading}
+          accessibilityRole="button"
+          accessibilityLabel="Upload an image from your gallery"
+        >
           <Text style={styles.cardIcon}>↑</Text>
           <Text style={styles.cardTitle}>Tap to upload image</Text>
           <Text style={styles.cardHint}>PNG, JPG, WebP from gallery</Text>
@@ -114,7 +132,7 @@ export function HomeScreen({ navigation }: Props) {
             <Text style={styles.loadingText}>{status}</Text>
           </View>
         )}
-      </View>
+      </Animated.View>
     </ImageBackground>
   );
 }
@@ -126,7 +144,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     width: '100%',
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     alignItems: 'center',
   },
   subtitle: {
@@ -150,6 +168,8 @@ const styles = StyleSheet.create({
     paddingVertical: 48,
     alignItems: 'center',
   },
+  cardPressed: { transform: [{ scale: 0.985 }], opacity: 0.92 },
+  cardDisabled: { opacity: 0.65 },
   cardIcon: {
     fontSize: 40,
     color: '#6c757d',
