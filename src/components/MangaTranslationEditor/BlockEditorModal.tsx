@@ -25,6 +25,7 @@ import {
   deleteDesignPreset,
   designFromBlock,
   loadDesignPresets,
+  MANGA_DESIGN_TEMPLATES,
   saveDesignPreset,
 } from '../../utils/designPresets';
 import {
@@ -359,7 +360,46 @@ export function BlockEditorModal({
                 </View>
               ) : (
                 <View style={styles.tabBody}>
-                  <Text style={styles.label}>Saved presets</Text>
+                  <View style={styles.designIntro}>
+                    <View style={styles.designIntroCopy}>
+                      <Text style={styles.designEyebrow}>MANGA TEXT DESIGN</Text>
+                      <Text style={styles.designTitle}>Make the lettering feel intentional</Text>
+                      <Text style={styles.designSubtitle}>Start with a treatment, then fine-tune its colors and typography.</Text>
+                    </View>
+                    <View style={styles.liveBadge}>
+                      <View style={styles.liveDot} />
+                      <Text style={styles.liveBadgeText}>LIVE</Text>
+                    </View>
+                  </View>
+
+                  <Text style={styles.sectionTitle}>Quick treatments</Text>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.templateRow}
+                    contentContainerStyle={styles.templateRowContent}
+                  >
+                    {MANGA_DESIGN_TEMPLATES.map((template) => (
+                      <Pressable
+                        key={template.id}
+                        style={({ pressed }) => [styles.templateCard, pressed && styles.pressed]}
+                        onPress={() => {
+                          const { id: _id, name: _name, description: _description, ...style } = template;
+                          onPatch(style);
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Apply ${template.name} template`}
+                      >
+                        <View style={[styles.templateSample, { backgroundColor: template.backgroundColor === 'transparent' ? '#E9EEF5' : template.backgroundColor }]}>
+                          <Text style={{ color: template.textColor, fontSize: Math.min(template.fontSize, 20), fontWeight: String(template.fontWeight) as any, fontStyle: template.fontStyle }} numberOfLines={1}>Aa</Text>
+                        </View>
+                        <Text style={styles.templateName} numberOfLines={1}>{template.name}</Text>
+                        <Text style={styles.templateDescription} numberOfLines={1}>{template.description}</Text>
+                      </Pressable>
+                    ))}
+                  </ScrollView>
+
+                  <Text style={styles.sectionTitle}>Saved presets</Text>
                   {presets.length === 0 ? (
                     <Text style={styles.presetEmpty}>No presets yet — save your current design below.</Text>
                   ) : (
@@ -853,6 +893,107 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '700',
     fontSize: 15,
+  },
+  designIntro: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    backgroundColor: '#F4F7FB',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 14,
+  },
+  designIntroCopy: {
+    flex: 1,
+    paddingRight: 10,
+  },
+  designEyebrow: {
+    color: '#4A90D9',
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1,
+    marginBottom: 4,
+  },
+  designTitle: {
+    color: '#172033',
+    fontSize: 16,
+    fontWeight: '800',
+    marginBottom: 4,
+  },
+  designSubtitle: {
+    color: '#667085',
+    fontSize: 11,
+    lineHeight: 16,
+  },
+  liveBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E1F7EC',
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+  },
+  liveDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#12B76A',
+    marginRight: 5,
+  },
+  liveBadgeText: {
+    color: '#087443',
+    fontSize: 9,
+    fontWeight: '800',
+  },
+  sectionTitle: {
+    color: '#172033',
+    fontSize: 13,
+    fontWeight: '800',
+    marginBottom: 8,
+  },
+  templateRow: {
+    flexGrow: 0,
+    marginBottom: 14,
+  },
+  templateRowContent: {
+    gap: 10,
+    paddingRight: 6,
+  },
+  templateCard: {
+    width: 142,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E4E7EC',
+    padding: 8,
+    shadowColor: '#101828',
+    shadowOpacity: 0.06,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  templateSample: {
+    height: 56,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#E4E7EC',
+  },
+  templateName: {
+    color: '#172033',
+    fontSize: 12,
+    fontWeight: '800',
+    marginBottom: 2,
+  },
+  templateDescription: {
+    color: '#98A2B3',
+    fontSize: 10,
+  },
+  pressed: {
+    opacity: 0.78,
+    transform: [{ scale: 0.97 }],
   },
   presetEmpty: {
     fontSize: 11,
