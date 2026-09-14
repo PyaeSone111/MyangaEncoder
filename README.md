@@ -1,0 +1,2 @@
+# MyangaEncoder
+Myanga Encoding application
